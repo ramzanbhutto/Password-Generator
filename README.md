@@ -1,4 +1,4 @@
-# Secure Password Manager
+# PASSANOMIX - A Secure Password Manager
 
 A command-line password manager with AES-256 encryption to keep your passwords safe.
 
@@ -32,6 +32,8 @@ brew install openssl
 
 Build the project:
 ```bash
+git clone https://github.com/ramzanbhutto/Passanomix.git
+cd Passanomix
 mkdir build && cd build
 cmake ..
 make
