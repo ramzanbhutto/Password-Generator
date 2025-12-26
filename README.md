@@ -1,89 +1,71 @@
-# Password Generator
+# Secure Password Manager
 
-A small C++ command-line utility that generates secure random passwords, ensures each generated password contains at least one uppercase letter, one lowercase letter, one digit and one special character, and saves generated passwords (with timestamps) to a JSON-formatted file.
+A command-line password manager with AES-256 encryption to keep your passwords safe.
 
 ## Features
 
-- Generates passwords with a user-specified length (minimum 8).
-- Ensures inclusion of at least one character from each category:
-  - Uppercase letters
-  - Lowercase letters
-  - Digits
-  - Special characters
-- Uses a Mersenne Twister RNG to shuffle the generated password for extra randomness.
-- Appends each generated password and its creation timestamp to `passwords.json` in a simple JSON object format.
-
-> Note: This project provides a small example implementation intended for learning and demonstration. Do not use this tool to store production secrets — it appends JSON objects to a file without encryption and with a simple custom format. If you want to secure your passwords, consider using established password managers and secure storage solutions or password hasher like Argon2id.
-
-## Repository structure
-
-- `main.cpp` — main program and password generation logic.
-- `json.h` — tiny helper class for keeping password entries and producing a simple JSON-like string.
-- `CMakeLists.txt` — CMake build configuration.
+- AES-256-CBC encryption with PBKDF2 key derivation
+- Secure random password generation
+- Password strength calculator
+- JSON-based encrypted storage
+- Master password protection
 
 ## Requirements
 
-- C++ compiler with C++11 or later support (project uses <random> and shuffle).
-- CMake >= 3.10
-- A standard development toolchain (gcc/clang on Linux/macOS or MSVC on Windows).
+- C++ compiler with C++14 support
+- CMake 3.10+
+- OpenSSL library
 
-## Build instructions
+## Installation
 
-1. Clone the Repository
-  ''' bash
-   git clone https://github.com/ramzanbhutto/Password-Generator.git
-   cd Password-Generator
-   '''
+Install OpenSSL:
+```bash
+# Arch Linux
+sudo pacman -S openssl
 
-2. Create and switch to a build directory, then run CMake and build:
-   ```
-   mkdir build
-   cd build
-   cmake ..
-   cmake --build .
-   ```
+# Ubuntu/Debian
+sudo apt-get install libssl-dev
 
-3. The executable will be created as `./password_generator` in the build directory.
+# macOS
+brew install openssl
+```
+
+Build the project:
+```bash
+mkdir build && cd build
+cmake ..
+make
+./password_manager
+```
 
 ## Usage
 
-Run the program from the build directory:
-```bash
-./password_generator
-```
+1. Enter your master password (minimum 8 characters)
+2. Choose from the menu:
+   - Generate and save new passwords
+   - Retrieve saved passwords
+   - View all entries
+   - Delete entries
 
-Example interaction:
-```plaintext
-Enter the desired password length (minimum 8): 12
-Password before shuffle: Ab3#kL9@1sT2
-Generated Password: 1k#A2b9sT@L3
-Password saved to passwords.json
-```
+All passwords are encrypted with your master password before saving.
 
-Each run appends a JSON object to `passwords.json`. The object uses the timestamp as the key and the password as the value. Example appended output (one object per line):
-```bash
-{
-  "2025-11-01 21:15:00": "1k#A2b9sT@L3"
-}
-```
-Note: The current implementation appends a new JSON object on each run — the file will contain multiple JSON objects (one per line), not a single aggregated JSON array.
+## File Structure
 
-## Customization ideas
+- `encryption.h` - AES-256 encryption
+- `base64.h` - Base64 encoding
+- `password_generator.h` - Password generation
+- `password_entry.h` - Entry structure
+- `password_storage.h` - Storage management
+- `main.cpp` - User interface
+- `passwords_secure.json` - Encrypted vault (auto-generated)
 
-- Store entries in a proper JSON array and use a JSON library (e.g., nlohmann/json) to manage reading/writing.
-- Add command-line flags to:
-  - Specify output file path
-  - Choose whether to append or overwrite
-  - Exclude/require character categories
-  - Generate multiple passwords in one run
-- Add optional encryption for saved passwords.
-- Improve timestamp format or timezone handling.
+## Security Notes
 
-## Security considerations
+- Never share your master password
+- Keep backups of `passwords_secure.json`
+- Passwords are encrypted with unique salt and IV
+- Memory is zeroed after operations
 
-- The program seeds srand(time(0)) for initial character picks but uses std::random_device + mt19937 for shuffling. Consider replacing any use of rand() with C++ <random> facilities for consistent cryptographic-quality randomness if this tool will be used for real secrets.
-- Do not store real, sensitive passwords in plaintext on disk. Use secure storage/encryption for production use.
+## License
 
-## Contributing
-
-Contributions, bug reports and improvements are welcome. Please open an issue or submit a pull request with a description of the change.
+Free to use for personal and educational purposes.

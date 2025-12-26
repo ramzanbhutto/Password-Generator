@@ -1,18 +1,20 @@
 cmake_minimum_required(VERSION 3.10)
-project(Password-Generator)
+project(SecurePasswordManager)
 
-# List source files
-set(SOURCES
-    main.cpp
-)
+# Set C++ standard
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# List all header files 
-set(HEADERS
-    json.h
-)
+# Find OpenSSL library
+find_package(OpenSSL REQUIRED)
 
-# Add executable target
-add_executable(password_generator ${SOURCES} ${HEADERS})
+# Add executable
+add_executable(password_manager main.cpp)
 
-# Include current directory for headers 
-target_include_directories(password_generator PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+# Link OpenSSL libraries
+target_link_libraries(password_manager OpenSSL::SSL OpenSSL::Crypto)
+
+# Optional: Add compiler warnings
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    target_compile_options(password_manager PRIVATE -Wall -Wextra -pedantic)
+endif()
